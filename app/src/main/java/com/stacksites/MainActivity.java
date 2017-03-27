@@ -1,6 +1,8 @@
 package com.stacksites;
 
 import java.io.FileNotFoundException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.app.Activity;
 import android.content.Context;
@@ -76,9 +78,19 @@ public class MainActivity extends Activity {
 
         @Override
         protected Void doInBackground(Void... arg0) {
+
+            //ユーザーが入力したURLをインテントを使って受け取り、DownloadFromUrlメソッドに渡す
+            Intent intent = getIntent();
+            String text = intent.getStringExtra("text");
+
+            Pattern p = Pattern.compile("http://m\\.ebay");
+            Matcher m = p.matcher(text);
+            text = m.replaceFirst("http://www.ebay");
+            text = text + "&_rss=1";
+
             //Download the file
             try {
-                Downloader.DownloadFromUrl("https://dl.dropboxusercontent.com/u/5724095/XmlParseExample/stacksites.xml", openFileOutput("StackSites.xml", Context.MODE_PRIVATE));
+                Downloader.DownloadFromUrl(text, openFileOutput("StackSites.xml", Context.MODE_PRIVATE));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
